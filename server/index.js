@@ -49,13 +49,11 @@ wss.on('connection', (ws) => {
             break;
           }
         }
-        console.log(rooms);
         break;
 
       // when a client changes the board, send updates to all connected clients on the room.
       case 'update':
         const { columns } = JSON.parse(data);
-        console.log(columns);
         const clients = rooms.get(boardId);
         clients.forEach((client) => {
           client.send(data, { binary: isBinary });
@@ -70,8 +68,8 @@ wss.on('connection', (ws) => {
 });
 
 // log to the server when a connection is closed.
-wss.on('close', () => {
-  console.log('Client Left the session');
+wss.on('close', (ws) => {
+  console.log('A client disconnected.');
 });
 
 // finally, initialize the WebSocket server on PORT:
