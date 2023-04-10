@@ -1,5 +1,6 @@
 const express = require('express');
 const app = express();
+app.use(cors());
 require('dotenv').config();
 const server = require('http').createServer(app);
 const WebSocket = require('ws');
