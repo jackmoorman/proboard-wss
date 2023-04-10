@@ -1,5 +1,6 @@
 const express = require('express');
 const app = express();
+const cors = require('cors');
 app.use(cors());
 require('dotenv').config();
 const server = require('http').createServer(app);
@@ -66,11 +67,20 @@ wss.on('connection', (ws) => {
         return;
     }
   });
-});
 
-// log to the server when a connection is closed.
-wss.on('close', (ws) => {
-  console.log('A client disconnected.');
+  // log to the server when a connection is closed.
+  ws.on('close', () => {
+    console.log('The client disconnected.');
+    for (let room of rooms) {
+      if (rooms[room] == ws) {
+        const updatedRoom = rooms.get(room);
+        if (!updatedRoom) return;
+        updatedRoom.splice(updatedRoom.indexOf(ws), 1);
+        rooms.set(room, updatedRoom);
+        return;
+      }
+    }
+  });
 });
 
 // finally, initialize the WebSocket server on PORT:
